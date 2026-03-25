@@ -6,7 +6,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Seguridad
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-alexis-sublimaciones-2026-v1')
-DEBUG = False
+
+# ACTIVAMOS DEBUG PARA VER EL ERROR REAL
+DEBUG = True
+
 ALLOWED_HOSTS = ['alexis-sublimaciones.onrender.com', 'araa.store', 'www.araa.store', '127.0.0.1', 'localhost']
 
 # Aplicaciones
@@ -79,12 +82,5 @@ def setup_tienda(sender, **kwargs):
         if not User.objects.filter(username='admin').exists():
             User.objects.create_superuser('admin', 'admin@araa.store', 'Alexis2026!')
         
-        # Ejecutar carga automática de catálogo
-      #  script_carga = os.path.join(BASE_DIR, "cargar_catalogo.py")
-       # if os.path.exists(script_carga):
-        #    import subprocess
-         #   try:
-          #      subprocess.run(["python", "cargar_catalogo.py"], check=True
-                #print("Catálogo cargado exitosamente.")
-            #except Exception as e:
-             #   print(f"Error al ejecutar script: {e}")
+        # El script de carga automática queda desactivado para evitar bloqueos
+        print("Setup de tienda finalizado (Usuario admin verificado).")
