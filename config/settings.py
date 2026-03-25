@@ -40,15 +40,18 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# 6. Configuración de archivos estáticos (Lo que faltaba)
+# 6. Configuración de archivos estáticos y Almacenamiento (CORREGIDO)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-# Configuración de almacenamiento para WhiteNoise
 STORAGES = {
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+    # ESTO ES LO QUE FALTABA PARA EVITAR EL ERROR EN RENDER:
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
     },
 }
 
@@ -62,6 +65,7 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
 # 9. Plantillas (Templates)
 TEMPLATES = [
     {
@@ -91,10 +95,4 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'es-uy'
 TIME_ZONE = 'America/Montevideo'
 USE_I18N = True
-USE_TZ = True
-# 12. Archivos Multimedia
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# 13. Tipo de campo por defecto para IDs
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+USE
