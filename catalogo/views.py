@@ -1,55 +1,52 @@
-from django.shortcuts import render, get_object_or_404, redirect
-import urllib.parse
+from django.shortcuts import render, get_object_split, redirect
+from .models import Producto, Categoria, Carrito, ItemCarrito
 
-def home(request):
-    from .models import Categoria
+def index(request):
+    # Traemos todas las categorías para mostrarlas en el catálogo
     categorias = Categoria.objects.all()
-    carrito = request.session.get('carrito', {})
-    total_items = sum(item['cantidad'] for item in carrito.values())
+    # Obtenemos el total de items para el icono del carrito en el navbar
+    session_id = request.session.session_key
+    total_items = 0
+    if session_id:
+        carrito = Carrito.objects.filter(session_id=session_id).first()
+        if carrito:
+            total_items = sum(item.cantidad for item in carrito.itemcarrito_set.all())
+    
     return render(request, 'index.html', {
         'categorias': categorias,
         'total_items': total_items
     })
 
 def agregar_al_carrito(request, producto_id):
-    from .models import Producto
+    if not request.session.session_key:
+        request.session.create()
+    
+    session_id = request.session.session_key
     producto = get_object_or_404(Producto, id=producto_id)
-    carrito = request.session.get('carrito', {})
-    p_id = str(producto_id)
-    if p_id in carrito:
-        carrito[p_id]['cantidad'] += 1
-    else:
-        carrito[p_id] = {
-            'nombre': producto.nombre,
-            'precio': float(producto.precio),
-            'cantidad': 1,
-            'imagen': producto.imagen.url if producto.imagen else ""
-        }
-    request.session['carrito'] = carrito
-    return redirect('home')
+    carrito, _ = Carrito.objects.get_or_create(session_id=session_id)
+    
+    item, created = ItemCarrito.objects.get_or_create(carrito=carrito, producto=producto)
+    if not created:
+        item.cantidad += 1
+        item.save()
+    
+    return redirect('index')
 
 def ver_carrito(request):
-    carrito = request.session.get('carrito', {})
+    session_id = request.session.session_key
+    carrito = None
+    items = []
     total = 0
-    mensaje = "Hola Alexis Sublimaciones, me interesa realizar el siguiente pedido:\n\n"
-    
-    for id, item in carrito.items():
-        subtotal = item['precio'] * item['cantidad']
-        total += subtotal
-        mensaje += f"- {item['nombre']} (Cant: {item['cantidad']}) - ${subtotal}\n"
-    
-    mensaje += f"\n*Total: ${total}*"
-    mensaje_url = urllib.parse.quote(mensaje)
-    
-    # CAMBIÁ EL NÚMERO ACÁ ABAJO (Ejemplo: 59899123456)
-    whatsapp_url = f"https://wa.me/59896229819?text={mensaje_url}"
-    
-    return render(request, 'carrito.html', {
-        'carrito': carrito, 
-        'total': total, 
-        'whatsapp_url': whatsapp_url
-    })
+    if session_id:
+        carrito = Carrito.objects.filter(session_id=session_id).first()
+        if carrito:
+            items = carrito.itemcarrito_set.all()
+            total = sum(item.producto.precio * item.cantidad for item in items)
+            
+    return render(request, 'carrito.html', {'items': items, 'total': total})
 
-def limpiar_carrito(request):
-    request.session['carrito'] = {}
-    return redirect('home')
+def eliminar_del_carrito(request, item_id):
+    item = get_object_or_404(ItemCarrito, id=item_id)
+    item.delete()
+    return redirect('ver_carrito')
+    
