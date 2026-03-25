@@ -23,8 +23,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',  # <--- REVISÁ QUE ESTA LÍNEA ESTÉ AQUÍ
-    # ... tus otras apps (catalogo, etc.) ...
+    'django.contrib.staticfiles',  # <--- ESTA ES LA LÍNEA MÁGICA
+    'catalogo',                    # Tu app de productos
+    'django_cleanup.apps.CleanupConfig',
 ]
 # 4. Al final del archivo, donde tenías el error:
 if not DEBUG:
