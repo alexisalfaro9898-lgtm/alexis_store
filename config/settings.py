@@ -1,10 +1,14 @@
 import os
 from pathlib import Path
 
-# ESTA ES LA LÍNEA QUE FALTA:
+# 1. Definir la base
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# ... Ahora sí, lo que ya tenías:
+# 2. Definir DEBUG y SECRET_KEY (IMPORTANTE: antes de usarlas abajo)
+DEBUG = False  # Cambialo a True si querés ver errores detallados en la web
+SECRET_KEY = 'django-insecure-tu-clave-aqui' 
+
+# 3. Ahora sí, los hosts
 ALLOWED_HOSTS = [
     'araa.store', 
     'www.araa.store', 
@@ -12,10 +16,8 @@ ALLOWED_HOSTS = [
     '.onrender.com'
 ]
 
-# 2. Configuración de archivos estáticos
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-# 3. Seguridad para producción (opcional pero recomendado)
+# ... resto del código (INSTALLED_APPS, etc.) ...
+
+# 4. Al final del archivo, donde tenías el error:
 if not DEBUG:
     SECRET_KEY = os.environ.get('SECRET_KEY', SECRET_KEY)
