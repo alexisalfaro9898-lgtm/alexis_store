@@ -17,7 +17,15 @@ ALLOWED_HOSTS = [
 ]
 
 # ... resto del código (INSTALLED_APPS, etc.) ...
-
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',  # <--- REVISÁ QUE ESTA LÍNEA ESTÉ AQUÍ
+    # ... tus otras apps (catalogo, etc.) ...
+]
 # 4. Al final del archivo, donde tenías el error:
 if not DEBUG:
     SECRET_KEY = os.environ.get('SECRET_KEY', SECRET_KEY)
