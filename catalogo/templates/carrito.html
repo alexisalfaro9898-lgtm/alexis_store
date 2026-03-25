@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mi Carrito - Alexis Sublimaciones</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .navbar { background-color: #000; }
+        .card { border-radius: 15px; }
+    </style>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-dark shadow">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{% url 'home' %}">← VOLVER A LA TIENDA</a>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h2 class="mb-4">Tu Pedido</h2>
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <table class="table align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Producto</th>
+                            <th class="text-center">Cantidad</th>
+                            <th class="text-end">Precio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for id, item in carrito.items %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <img src="{{ item.imagen }}" alt="" style="width: 50px; height: 50px; object-fit: contain; margin-right: 15px;">
+                                    <strong>{{ item.nombre }}</strong>
+                                </div>
+                            </td>
+                            <td class="text-center">{{ item.cantidad }}</td>
+                            <td class="text-end">${{ item.precio }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <hr>
+                <h3 class="text-end fw-bold">Total: ${{ total }}</h3>
+            </div>
+        </div>
+        
+        <div class="mt-4 d-flex justify-content-between pb-5">
+            <a href="{% url 'limpiar_carrito' %}" class="btn btn-outline-danger">Vaciar Carrito</a>
+            <a href="{{ whatsapp_url }}" target="_blank" class="btn btn-success btn-lg px-5">Finalizar por WhatsApp</a>
+        </div>
+    </div>
+</body>
+</html>
