@@ -1,3 +1,7 @@
+import os  # <-- REVISÁ QUE ESTO ESTÉ AL PRINCIPIO
+from pathlib import Path
+
+# ... resto del código ...
 # 1. Permitir que Render vea la web
 ALLOWED_HOSTS = [
     'araa.store', 
