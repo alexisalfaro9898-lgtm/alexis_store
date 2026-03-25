@@ -4,11 +4,11 @@ from pathlib import Path
 # 1. Definir la base
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# 2. Definir DEBUG y SECRET_KEY (IMPORTANTE: antes de usarlas abajo)
-DEBUG = False  # Cambialo a True si querés ver errores detallados en la web
-SECRET_KEY = 'django-insecure-tu-clave-aqui' 
+# 2. Seguridad y Debug
+DEBUG = False 
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-alexis-sublimaciones-2026-v1')
 
-# 3. Ahora sí, los hosts
+# 3. Hosts permitidos
 ALLOWED_HOSTS = [
     'araa.store', 
     'www.araa.store', 
@@ -16,17 +16,49 @@ ALLOWED_HOSTS = [
     '.onrender.com'
 ]
 
-# ... resto del código (INSTALLED_APPS, etc.) ...
+# 4. Aplicaciones
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',  # <--- ESTA ES LA LÍNEA MÁGICA
-    'catalogo',                    # Tu app de productos
+    'django.contrib.staticfiles',  # Manejo de archivos estáticos
+    'catalogo',                    # Tu aplicación de productos
     'django_cleanup.apps.CleanupConfig',
 ]
-# 4. Al final del archivo, donde tenías el error:
-if not DEBUG:
-    SECRET_KEY = os.environ.get('SECRET_KEY', SECRET_KEY)
+
+# 5. Middleware (Importante el orden de WhiteNoise)
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Sirve archivos estáticos en Render
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+# 6. Configuración de archivos estáticos (Lo que faltaba)
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+# Configuración de almacenamiento para WhiteNoise
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+# 7. URL principal
+ROOT_URLCONF = 'config.urls'
+
+# 8. Base de datos (SQLite para empezar)
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
