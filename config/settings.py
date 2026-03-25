@@ -1,22 +1,12 @@
 import os
 from pathlib import Path
 
-# 1. Base del proyecto
 BASE_DIR = Path(__file__).resolve().parent.parent
-RUTA_CATALOGO = os.path.join(BASE_DIR, 'CATALOGO_LIMPIO_DISER')
-# 2. Seguridad
 DEBUG = False
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-alexis-sublimaciones-2026-v1')
 
-# 3. Hosts
-ALLOWED_HOSTS = [
-    'araa.store', 
-    'www.araa.store', 
-    '127.0.0.1', 
-    '.onrender.com'
-]
+ALLOWED_HOSTS = ['araa.store', 'www.araa.store', '127.0.0.1', '.onrender.com']
 
-# 4. Apps
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -28,7 +18,6 @@ INSTALLED_APPS = [
     'django_cleanup.apps.CleanupConfig',
 ]
 
-# 5. Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -40,68 +29,40 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# 6. Estáticos y Almacenamiento
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 STORAGES = {
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-    "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-    },
+    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
 }
 
-# 7. URLs y Templates
 ROOT_URLCONF = 'config.urls'
+TEMPLATES = [{
+    'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    'DIRS': [os.path.join(BASE_DIR, 'templates')],
+    'APP_DIRS': True,
+    'OPTIONS': {'context_processors': [
+        'django.template.context_processors.debug',
+        'django.template.context_processors.request',
+        'django.contrib.auth.context_processors.auth',
+        'django.contrib.messages.context_processors.messages',
+    ]},
+}]
 
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
-]
+DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': BASE_DIR / 'db.sqlite3'}}
 
-# 8. Base de Datos
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-# 9. Password Validation
-AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
-]
-
-# 10. Internacionalización (Uruguay)
 LANGUAGE_CODE = 'es-uy'
 TIME_ZONE = 'America/Montevideo'
 USE_I18N = True
 USE_TZ = True
 
-# 11. Media e IDs
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# --- AUTO-CONFIGURACIÓN PARA RENDER ---
-# Esto automatiza lo que la Shell bloqueada no nos deja hacer
+# --- AUTO-CONFIGURACIÓN (LLAVE MAESTRA) ---
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
 
@@ -112,9 +73,7 @@ def setup_tienda(sender, **kwargs):
         if not User.objects.filter(username='admin').exists():
             User.objects.create_superuser('admin', 'admin@araa.store', 'Alexis2026!')
         
-        try:
+        script_carga = os.path.join(BASE_DIR, "cargar_catalogo.py")
+        if os.path.exists(script_carga):
             import subprocess
-            # Ejecuta el script de carga si existe en la raíz
             subprocess.run(["python", "cargar_catalogo.py"])
-        except Exception:
-            pass
