@@ -3,7 +3,7 @@ from pathlib import Path
 
 # 1. Base del proyecto
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+RUTA_CATALOGO = os.path.join(BASE_DIR, 'CATALOGO_LIMPIO_DISER')
 # 2. Seguridad
 DEBUG = False
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-alexis-sublimaciones-2026-v1')
