@@ -99,3 +99,12 @@ USE_TZ = True
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# --- AUTO-CONFIGURACIÓN PARA RENDER (La Llave Maestra) ---
+# Este bloque crea el admin y carga productos automáticamente al arrancar
+import django
+from django.db.models.signals import post_migrate
+from django.dispatch import receiver
+
+@receiver(post_migrate)
+def setup_tienda(sender,
