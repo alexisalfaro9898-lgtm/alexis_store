@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Seguridad
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-alexis-sublimaciones-2026-v1')
 DEBUG = False
-ALLOWED_HOSTS = ['araa.store', 'www.araa.store', '127.0.0.1', '.onrender.com']
+ALLOWED_HOSTS = ['alexis-sublimaciones.onrender.com', 'araa.store', 'www.araa.store', '127.0.0.1', 'localhost']
 
 # Aplicaciones
 INSTALLED_APPS = [
