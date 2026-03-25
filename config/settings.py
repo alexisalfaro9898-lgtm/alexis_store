@@ -1,4 +1,4 @@
-import os  # <-- REVISÁ QUE ESTO ESTÉ AL PRINCIPIO
+import os
 from pathlib import Path
 
 # ... resto del código ...
