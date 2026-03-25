@@ -80,11 +80,11 @@ def setup_tienda(sender, **kwargs):
             User.objects.create_superuser('admin', 'admin@araa.store', 'Alexis2026!')
         
         # Ejecutar carga automática de catálogo
-        script_carga = os.path.join(BASE_DIR, "cargar_catalogo.py")
-        if os.path.exists(script_carga):
-            import subprocess
-            try:
-                subprocess.run(["python", "cargar_catalogo.py"], check=True)
-                print("Catálogo cargado exitosamente.")
-            except Exception as e:
-                print(f"Error al ejecutar script: {e}")
+      #  script_carga = os.path.join(BASE_DIR, "cargar_catalogo.py")
+       # if os.path.exists(script_carga):
+        #    import subprocess
+         #   try:
+          #      subprocess.run(["python", "cargar_catalogo.py"], check=True
+                #print("Catálogo cargado exitosamente.")
+            #except Exception as e:
+             #   print(f"Error al ejecutar script: {e}")
