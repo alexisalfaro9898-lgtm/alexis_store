@@ -1,18 +1,15 @@
 import os
 from pathlib import Path
 
-# Directorio Base
+# --- 1. DEFINIR BASE_DIR PRIMERO (ESTO ARREGLA EL ERROR) ---
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Seguridad
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-alexis-sublimaciones-2026-v1')
-
-# ACTIVAMOS DEBUG PARA VER EL ERROR REAL
-DEBUG = True
-
+# --- 2. SEGURIDAD ---
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-v1-alexis')
+DEBUG = True  # Dejalo en True un momento para confirmar que las tablas se crean
 ALLOWED_HOSTS = ['alexis-sublimaciones.onrender.com', 'araa.store', 'www.araa.store', '127.0.0.1', 'localhost']
 
-# Aplicaciones
+# --- 3. APLICACIONES ---
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -24,7 +21,7 @@ INSTALLED_APPS = [
     'django_cleanup.apps.CleanupConfig',
 ]
 
-# Middlewares
+# --- 4. MIDDLEWARES ---
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -50,27 +47,23 @@ TEMPLATES = [{
     ]},
 }]
 
-# Base de datos SQLite
 DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': BASE_DIR / 'db.sqlite3'}}
 
-# Idioma y Hora (Uruguay)
-LANGUAGE_CODE = 'es-uy'
-TIME_ZONE = 'America/Montevideo'
-USE_I18N = True
-USE_TZ = True
-
-# Archivos Estáticos (CSS, JS)
+# --- 5. ARCHIVOS ESTÁTICOS Y MEDIA ---
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
-# --- CONFIGURACIÓN DE IMÁGENES (MEDIA) ---
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'CATALOGO_LIMPIO_DISER')
 
+LANGUAGE_CODE = 'es-uy'
+TIME_ZONE = 'America/Montevideo'
+USE_I18N = True
+USE_TZ = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# --- LLAVE MAESTRA (Crear Admin y Cargar Productos) ---
+# --- 6. SETUP AUTOMÁTICO (ADMIN) ---
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
 
@@ -78,9 +71,6 @@ from django.dispatch import receiver
 def setup_tienda(sender, **kwargs):
     if sender.name == 'catalogo':
         from django.contrib.auth.models import User
-        # Crear admin si no existe
         if not User.objects.filter(username='admin').exists():
             User.objects.create_superuser('admin', 'admin@araa.store', 'Alexis2026!')
-        
-        # El script de carga automática queda desactivado para evitar bloqueos
-        print("Setup de tienda finalizado (Usuario admin verificado).")
+        print("Setup finalizado.")
